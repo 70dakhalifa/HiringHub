@@ -3,6 +3,7 @@ namespace CV_Filtation_System.Core.Entities
 {
     public class User : IdentityUser
     {
+        [required]
         public string Name { get; set; } = string.Empty;
         public string Address { get; set; }
         public string City { get; set; }
