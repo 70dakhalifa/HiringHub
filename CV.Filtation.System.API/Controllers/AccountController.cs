@@ -30,7 +30,7 @@ namespace CV.Filtation.System.API.Controllers
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
                 TwoFactorEnabled = true,
-                LockoutEnabled = true,
+                LockoutEnabled = true, 
                 AccessFailedCount = 0,
                 UserName=model.Name
             };
