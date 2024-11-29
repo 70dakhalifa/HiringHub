@@ -1,19 +1,12 @@
-﻿using CV_Filtation_System.Core.Entities;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace CV_Filtation_System.Repository.Data
+namespace CV_Filtation_System.Core.Entities
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<User>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<User> Users { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<JobPosting> JobPostings { get; set; }
         public DbSet<Skill> Skills { get; set; }
@@ -23,6 +16,8 @@ namespace CV_Filtation_System.Repository.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<UserSkill>()
                 .HasKey(us => new { us.UserId, us.SkillId });
 

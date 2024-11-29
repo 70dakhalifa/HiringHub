@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CV.Filtation.System_Repository\CV_Filtation_System.Repository.csproj" />
+    <ProjectReference Include="..\CV_Filtration.Core\CV_Filtation_System.Core.csproj" />
   </ItemGroup>
 
 </Project>

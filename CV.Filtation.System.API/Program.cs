@@ -1,4 +1,5 @@
-using CV_Filtation_System.Repository.Data;
+using CV_Filtation_System.Core.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace CV.Filtation.System.API
@@ -11,6 +12,11 @@ namespace CV.Filtation.System.API
 
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // Configure Identity
+            builder.Services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
 
             // Add services to the container.
 
@@ -31,7 +37,6 @@ namespace CV.Filtation.System.API
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
