@@ -34,6 +34,10 @@ namespace CV.Filtation.System.API
                 app.UseSwaggerUI();
             }
 
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
+
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
