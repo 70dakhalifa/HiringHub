@@ -22,7 +22,8 @@ namespace CV.Filtation.System.API.Controllers
         {
             var user = new User
             {
-                Name = model.Name,
+                FName = model.FName,
+                LName = model.LName,
                 Address = model.Address,
                 City = model.City,
                 Email = model.Email,
@@ -32,17 +33,17 @@ namespace CV.Filtation.System.API.Controllers
                 TwoFactorEnabled = true,
                 LockoutEnabled = true, 
                 AccessFailedCount = 0,
-                UserName=model.Name
+                UserName=model.FName
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded) return BadRequest(result.Errors);
             var returnedUser = new UserDTO
             {
-                DisplayName = user.Name,
+                DisplayName = user.FName,
                 Email = user.Email,
                 Token = "This Will Be Token"
             };
-            return Ok(returnedUser);
+            return Ok(new { Message = "User registered successfully" });
         }
         [HttpPost("Login")]
         public async Task<ActionResult<UserDTO>> Login(LoginDTO model)
@@ -55,7 +56,7 @@ namespace CV.Filtation.System.API.Controllers
 
             return Ok(new UserDTO
             {
-                DisplayName = user.Name,
+                DisplayName = user.FName,
                 Email = user.Email,
                 Token = "This is Token"
             });
