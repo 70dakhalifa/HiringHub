@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
+
+
 namespace CV.Filtation.System.API.Controllers
 {
     public class AccountController : APIBaseController
@@ -60,6 +62,7 @@ namespace CV.Filtation.System.API.Controllers
                 Email = user.Email,
                 Token = "This is Token"
             });
+
         }
     }
 }
