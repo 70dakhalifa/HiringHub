@@ -22,6 +22,12 @@ namespace CV.Filtation.System.API.Controllers
         [HttpPost("Register")]
         public async Task<ActionResult<UserDTO>> Register(RegisterUserDTO model)
         {
+            // Check if Password and ConfirmPassword match
+            if (model.Password != model.ConfirmPassword)
+            {
+                return BadRequest(new { Message = "Password and Confirm Password do not match." });
+            }
+
             var user = new User
             {
                 FName = model.FName,
@@ -33,19 +39,28 @@ namespace CV.Filtation.System.API.Controllers
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
                 TwoFactorEnabled = true,
-                LockoutEnabled = true, 
+                LockoutEnabled = true,
                 AccessFailedCount = 0,
-                UserName=model.FName
+                UserName = model.FName
             };
+
             var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded) return BadRequest(result.Errors);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
             var returnedUser = new UserDTO
             {
                 DisplayName = user.FName,
                 Email = user.Email,
                 Token = "This Will Be Token"
             };
-            return Ok(new { Message = "User registered successfully" });
+
+            return Ok(new
+            {
+                Message = "User registered successfully",
+            });
         }
         [HttpPost("Login")]
         public async Task<ActionResult<UserDTO>> Login(LoginDTO model)
@@ -56,11 +71,17 @@ namespace CV.Filtation.System.API.Controllers
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
             if (!result.Succeeded) return Unauthorized("Invalid email or password");
 
-            return Ok(new UserDTO
+            var returnedUser = new UserDTO
             {
                 DisplayName = user.FName,
                 Email = user.Email,
-                Token = "This is Token"
+                Token = "This Will Be Token"
+            };
+
+            return Ok(new
+            {
+                Message = "User Logined successfully",
+                User = returnedUser
             });
 
         }
