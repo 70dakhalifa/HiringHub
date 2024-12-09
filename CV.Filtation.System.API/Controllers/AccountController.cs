@@ -22,7 +22,6 @@ namespace CV.Filtation.System.API.Controllers
         [HttpPost("Register")]
         public async Task<ActionResult<UserDTO>> Register(RegisterUserDTO model)
         {
-            // Check if Password and ConfirmPassword match
             if (model.Password != model.ConfirmPassword)
             {
                 return BadRequest(new { Message = "Password and Confirm Password do not match." });
