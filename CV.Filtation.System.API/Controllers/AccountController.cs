@@ -41,7 +41,7 @@ namespace CV.Filtation.System.API.Controllers
                 TwoFactorEnabled = true,
                 LockoutEnabled = true,
                 AccessFailedCount = 0,
-                UserName = model.FName
+                UserName = model.Email
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
