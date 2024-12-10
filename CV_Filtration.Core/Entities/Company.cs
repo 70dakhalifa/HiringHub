@@ -9,6 +9,7 @@ namespace CV_Filtation_System.Core.Entities
     public class Company
     {
         public int CompanyId { get; set; }
+
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
         public string? Website { get; set; }
