@@ -1,8 +1,12 @@
 using CV_Filtation_System.Core.Entities;
+using CV_Filtation_System.Services;
 using CV_Filtation_System.Core.Repositories;
 using CV_Filtation_System.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace CV.Filtation.System.API
 {
@@ -21,6 +25,7 @@ namespace CV.Filtation.System.API
                 .AddDefaultTokenProviders();
 
             // Add services to the container.
+            builder.Services.AddScoped<ITokenService, TokenService>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -29,7 +34,38 @@ namespace CV.Filtation.System.API
             builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
+            // JWT Authentication Configuration
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                };
+            });
+
             var app = builder.Build();
+
+            // Middleware configuration
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -43,10 +79,19 @@ namespace CV.Filtation.System.API
 
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseRouting();
 
+            // Add Authentication and Authorization middleware
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseAuthorization();
             app.UseAuthorization();
 
             app.MapControllers();
+            app.MapControllerRoute(
+                      name: "default",
+                      pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }
