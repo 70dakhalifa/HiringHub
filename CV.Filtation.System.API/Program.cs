@@ -1,4 +1,6 @@
 using CV_Filtation_System.Core.Entities;
+using CV_Filtation_System.Core.Repositories;
+using CV_Filtation_System.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +13,7 @@ namespace CV.Filtation.System.API
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection2")));
 
             // Configure Identity
             builder.Services.AddIdentity<User, IdentityRole>()
@@ -24,6 +26,8 @@ namespace CV.Filtation.System.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
             var app = builder.Build();
 

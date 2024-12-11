@@ -26,6 +26,10 @@ namespace CV_Filtation_System.Core.Entities
 
             modelBuilder.Entity<CompanyJobPosting>()
                 .HasKey(cj => new { cj.CompanyId, cj.JobId });
+
+            modelBuilder.Entity<Company>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
         }
     }
 }

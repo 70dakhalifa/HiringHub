@@ -15,6 +15,7 @@ namespace CV_Filtation_System.Core.Entities
         public string? Website { get; set; }
         public string? Location { get; set; }
         public string Email { get; set; } = string.Empty;
+        public string ?Password { get; set; }
 
         public ICollection<CompanyJobPosting> JobPostings { get; set; } = new List<CompanyJobPosting>();
     }
