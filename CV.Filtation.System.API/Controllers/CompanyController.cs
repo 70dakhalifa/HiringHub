@@ -36,7 +36,7 @@ namespace CV.Filtation.System.API.Controllers
                     Password = passwordHash
                 };
                 var ch = await _companyRepository.AddAsync(company);
-                return Ok(new{Message = "User registered successfully"});
+                return Ok(new{Message = "Your registered successfully"});
             }
             return BadRequest();
         }
@@ -54,7 +54,7 @@ namespace CV.Filtation.System.API.Controllers
                 Email = company.Email,
                 Token = "This is Token"
             };
-            return returnedCompany;
+            return Ok(new { Message = "Your login successfully" });
         }
     }
 }
