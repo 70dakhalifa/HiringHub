@@ -11,4 +11,8 @@
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CV.Filtation.System_Repository\CV_Filtation_System.Repository.csproj" />
+  </ItemGroup>
+
 </Project>

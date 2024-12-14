@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35208.52
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CV.Filtation.System.API", "CV.Filtation.System.API\CV.Filtation.System.API.csproj", "{798B4E0B-EC08-4AED-BC60-406DD0A8EAC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CV.Filtation.System.API", "CV.Filtation.System.API\CV.Filtation.System.API.csproj", "{798B4E0B-EC08-4AED-BC60-406DD0A8EAC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CV_Filtation_System.Core", "CV_Filtration.Core\CV_Filtation_System.Core.csproj", "{6E5470C6-5BD6-49D7-A1A3-03AB983BF1E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CV_Filtation_System.Core", "CV_Filtration.Core\CV_Filtation_System.Core.csproj", "{6E5470C6-5BD6-49D7-A1A3-03AB983BF1E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CV_Filtation_System.Repository", "CV.Filtation.System_Repository\CV_Filtation_System.Repository.csproj", "{139A298A-31D4-4740-B63F-33CD9BC70A62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CV_Filtation_System.Repository", "CV.Filtation.System_Repository\CV_Filtation_System.Repository.csproj", "{139A298A-31D4-4740-B63F-33CD9BC70A62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CV_Filtation_System.Services", "CV_Filtation_System.Services\CV_Filtation_System.Services.csproj", "{CFE857A2-C93E-4132-A939-F55922587DD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CV_Filtation_System.Services", "CV_Filtation_System.Services\CV_Filtation_System.Services.csproj", "{CFE857A2-C93E-4132-A939-F55922587DD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -8,9 +8,12 @@ namespace CV_Filtation_System.Core.Entities
 {
     public class CompanyJobPosting
     {
+        public int CompanyJobPostingId { get; set; }
+        public int JobPostingId { get; set; }
         public int CompanyId { get; set; }
-        public Company Company { get; set; } = null!;
-        public int JobId { get; set; }
-        public JobPosting JobPosting { get; set; } = null!;
+
+        // Navigation properties
+        public JobPosting JobPosting { get; set; }
+        public Company Company { get; set; }
     }
 }

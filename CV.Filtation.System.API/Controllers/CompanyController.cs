@@ -1,8 +1,6 @@
 ﻿using CV.Filtation.System.API.DTO;
 using CV_Filtation_System.Core.Entities;
 using CV_Filtation_System.Core.Repositories;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

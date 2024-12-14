@@ -4,6 +4,7 @@ using CV_Filtation_System.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CV_Filtation_System.Repository.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241214152424_Last-Updatess")]
+    partial class LastUpdatess
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,13 +66,13 @@ namespace CV_Filtation_System.Repository.Data.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
+                    b.Property<int>("JobId")
+                        .HasColumnType("int");
+
                     b.Property<int>("JobPostingId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CompanyJobPostingId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CompanyId", "JobPostingId");
+                    b.HasKey("CompanyId", "JobId");
 
                     b.HasIndex("JobPostingId");
 
@@ -84,19 +87,27 @@ namespace CV_Filtation_System.Repository.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("JobPostingId"));
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmploymentType")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Location")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SalaryRange")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("JobPostingId");
@@ -374,13 +385,13 @@ namespace CV_Filtation_System.Repository.Data.Migrations
             modelBuilder.Entity("CV_Filtation_System.Core.Entities.CompanyJobPosting", b =>
                 {
                     b.HasOne("CV_Filtation_System.Core.Entities.Company", "Company")
-                        .WithMany("CompanyJobPostings")
+                        .WithMany("JobPostings")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("CV_Filtation_System.Core.Entities.JobPosting", "JobPosting")
-                        .WithMany("CompanyJobPostings")
+                        .WithMany("Companies")
                         .HasForeignKey("JobPostingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -481,12 +492,12 @@ namespace CV_Filtation_System.Repository.Data.Migrations
 
             modelBuilder.Entity("CV_Filtation_System.Core.Entities.Company", b =>
                 {
-                    b.Navigation("CompanyJobPostings");
+                    b.Navigation("JobPostings");
                 });
 
             modelBuilder.Entity("CV_Filtation_System.Core.Entities.JobPosting", b =>
                 {
-                    b.Navigation("CompanyJobPostings");
+                    b.Navigation("Companies");
                 });
 
             modelBuilder.Entity("CV_Filtation_System.Core.Entities.Skill", b =>

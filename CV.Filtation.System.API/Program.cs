@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace CV.Filtation.System.API
 {
@@ -16,8 +18,17 @@ namespace CV.Filtation.System.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection2")));
+            //builder.Services.AddDbContext<AppDbContext>(options =>
+            //    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection2"))
+            //    .EnableSensitiveDataLogging()
+            //    .LogTo(Console.WriteLine, LogLevel.Information)
+            //    );
+            //builder.Services.AddLogging();
+
+            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddScoped<IJobPostingService, JobPostingService>();
+            builder.Services.AddControllers();
+          
 
             // Configure Identity
             builder.Services.AddIdentity<User, IdentityRole>()
@@ -27,12 +38,20 @@ namespace CV.Filtation.System.API
             // Add services to the container.
             builder.Services.AddScoped<ITokenService, TokenService>();
 
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+            });
+
+           
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+            builder.Services.AddScoped<IJobPostingService, JobPostingService>();
 
             // JWT Authentication Configuration
             builder.Services.AddAuthentication(options =>
