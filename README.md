@@ -1,6 +1,6 @@
-# Hiring Hup
+# Hiring Hub
 ## Overview
-The **Hiring Hup** is designed to streamline and enhance the hiring process for companies and job seekers. By automating key recruitment tasks such as CV parsing, job matching, and application submission, the system addresses common challenges in recruitment, including overwhelming application volumes, skill mismatches, and inefficiencies in communication.
+The **Hiring Hub** is designed to streamline and enhance the hiring process for companies and job seekers. By automating key recruitment tasks such as CV parsing, job matching, and application submission, the system addresses common challenges in recruitment, including overwhelming application volumes, skill mismatches, and inefficiencies in communication.
 
 ---
 
