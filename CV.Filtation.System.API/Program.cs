@@ -1,5 +1,4 @@
 using CV_Filtation_System.Core.Entities;
-using CV_Filtation_System.Services;
 using CV_Filtation_System.Core.Repositories;
 using CV_Filtation_System.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,9 +6,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.Text.Json;
-using Microsoft.Extensions.Configuration;
-
+using CV_Filtation_System.Services.Services;
+using FluentAssertions.Common;
+using CV_Filtation_System.Services.Models;
+using NETCore.MailKit.Core;
+using EmailService = CV_Filtation_System.Services.Services.EmailService;
+using IEmailService = CV_Filtation_System.Services.Services.IEmailService;
 namespace CV.Filtation.System.API
 {
     public class Program
@@ -17,7 +19,7 @@ namespace CV.Filtation.System.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            var configuration = builder.Configuration;
             //builder.Services.AddDbContext<AppDbContext>(options =>
             //    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection2"))
             //    .EnableSensitiveDataLogging()
@@ -28,7 +30,15 @@ namespace CV.Filtation.System.API
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddScoped<IJobPostingService, JobPostingService>();
             builder.Services.AddControllers();
-          
+
+            //Add Email Congig
+            var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+            builder.Services.AddSingleton(emailConfig);
+            builder.Services.AddScoped<IEmailService, EmailService>();
+
+            //Add config for Required Email
+            builder.Services.Configure<IdentityOptions>(
+                otps => otps.SignIn.RequireConfirmedEmail = true);
 
             // Configure Identity
             builder.Services.AddIdentity<User, IdentityRole>()
@@ -44,7 +54,7 @@ namespace CV.Filtation.System.API
             });
 
            
-
+            
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

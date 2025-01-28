@@ -1,6 +1,6 @@
 ﻿using CV.Filtation.System.API.DTO;
 using CV_Filtation_System.Core.Entities;
-using CV_Filtation_System.Services;
+using CV_Filtation_System.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

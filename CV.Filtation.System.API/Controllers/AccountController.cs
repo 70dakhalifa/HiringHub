@@ -1,11 +1,15 @@
-﻿using CV.Filtation.System.API.DTO;
+﻿using Azure;
+using CV.Filtation.System.API.DTO;
 using CV_Filtation_System.Core.Entities;
+using CV_Filtation_System.Services.Models;
+using CV_Filtation_System.Services.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Response = CV_Filtation_System.Services.Models.Response;
 
 namespace CV.Filtation.System.API.Controllers
 {
@@ -14,14 +18,16 @@ namespace CV.Filtation.System.API.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
         public AccountController(UserManager<User> userManager,
             SignInManager<User> signInManager,
-            IConfiguration configuration)
+            IConfiguration configuration, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
         [HttpPost("Register")]
@@ -49,21 +55,29 @@ namespace CV.Filtation.System.API.Controllers
             {
                 return BadRequest(result.Errors);
             }
+            //Add Token to Verify the email....
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authentication", new { token, email = user.Email }, Request.Scheme);
+            var message = new Message(new string[] { user.Email! }, "Confirmation email link", confirmationLink!);
+            _emailService.SendEmail(message);
 
-            var token = GenerateToken(user);
+            return StatusCode(StatusCodes.Status200OK,
+                    new Response { Status = "Success", Message = $"User created & Email Sent to {user.Email} SuccessFully" });
 
-            var returnedUser = new UserDTO
-            {
-                DisplayName = user.FName,
-                Email = user.Email,
-                Token = token
-            };
+            //var token = GenerateToken(user);
 
-            return Ok(new
-            {
-                Message = "User registered successfully",
-                User = returnedUser
-            });
+            //var returnedUser = new UserDTO
+            //{
+            //    DisplayName = user.FName,
+            //    Email = user.Email,
+            //    Token = token
+            //};
+
+            //return Ok(new
+            //{
+            //    Message = "User registered successfully",
+            //    User = returnedUser
+            //});
         }
 
         [HttpPost("Login")]
@@ -119,5 +133,23 @@ namespace CV.Filtation.System.API.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+            
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+                if (result.Succeeded)
+                {
+                    return StatusCode(StatusCodes.Status200OK,
+                      new Response { Status = "Success", Message = "Email Verified Successfully" });
+                }
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                       new Response { Status = "Error", Message = "This User Doesnot exist!" });
+        }
     }
 }
+    

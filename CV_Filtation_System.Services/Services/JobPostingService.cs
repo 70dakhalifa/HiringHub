@@ -1,13 +1,9 @@
 ﻿using CV.Filtation.System.API.DTO;
 using CV_Filtation_System.Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CV_Filtation_System.Services
+
+namespace CV_Filtation_System.Services.Services
 {
     public class JobPostingService : IJobPostingService
     {
