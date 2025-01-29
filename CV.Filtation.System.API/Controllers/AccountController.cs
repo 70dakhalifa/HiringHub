@@ -1,12 +1,12 @@
-﻿using Azure;
-using CV.Filtation.System.API.DTO;
+﻿using CV.Filtation.System.API.DTO;
 using CV_Filtation_System.Core.Entities;
 using CV_Filtation_System.Services.Models;
 using CV_Filtation_System.Services.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+    using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Response = CV_Filtation_System.Services.Models.Response;
@@ -19,6 +19,7 @@ namespace CV.Filtation.System.API.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
+
 
         public AccountController(UserManager<User> userManager,
             SignInManager<User> signInManager,
@@ -149,6 +150,55 @@ namespace CV.Filtation.System.API.Controllers
             }
             return StatusCode(StatusCodes.Status500InternalServerError,
                        new Response { Status = "Error", Message = "This User Doesnot exist!" });
+        }
+        [HttpPost("ForgotPassword")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if(user != null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var ForgotPasswordLink = Url.Action(nameof(ResetPassword), "Authentication", new {
+                    token, email = user.Email }, Request.Scheme);
+                var message = new Message(new string[] { user.Email! }, "Forgot Password link", ForgotPasswordLink!);
+                _emailService.SendEmail(message);
+
+                return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Message = $"Password Changed request is sent on Email {user.Email}.Please Open your Email & click the link." });
+            }
+            return StatusCode(StatusCodes.Status400BadRequest,
+                       new Response { Status = "Error", Message = $"Could not send link to email, Please try again." });
+        }
+        [HttpGet("reset-password")]
+        public async Task<IActionResult> ResetPassword(string token, string email)
+        {
+            var model = new ResetPassword { Token = token, Email = email };
+            return Ok(new { model });
+        }
+        [HttpPost("reset-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(ResetPassword resetPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(resetPassword.Email);
+            if (user != null)
+            {
+                var resetPasswordResult = await _userManager.ResetPasswordAsync(user, resetPassword.Token, resetPassword.Password);
+                if (!resetPasswordResult.Succeeded)
+                {
+                    foreach (var error in resetPasswordResult.Errors) // Fixed: Use resetPasswordResult.Errors
+                    {
+                        ModelState.AddModelError(error.Code, error.Description);
+                    }
+                    return Ok(ModelState); // Fixed: Node1State -> ModelState
+                }
+
+                return StatusCode(StatusCodes.Status200OK, // Fixed: Status2000K -> Status200OK
+                    new Response { Status = "Success", Message = $"Password has been Changed" });
+            }
+
+            return StatusCode(StatusCodes.Status400BadRequest,
+                new Response { Status = "Error", Message = $"Could not send Link to email, Please try again." });
         }
     }
 }

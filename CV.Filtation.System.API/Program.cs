@@ -40,6 +40,9 @@ namespace CV.Filtation.System.API
             builder.Services.Configure<IdentityOptions>(
                 otps => otps.SignIn.RequireConfirmedEmail = true);
 
+            builder.Services.Configure<DataProtectionTokenProviderOptions>(
+                otps => otps.TokenLifespan = TimeSpan.FromHours(10));
+
             // Configure Identity
             builder.Services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
