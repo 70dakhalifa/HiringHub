@@ -12,6 +12,7 @@ using CV_Filtation_System.Services.Models;
 using NETCore.MailKit.Core;
 using EmailService = CV_Filtation_System.Services.Services.EmailService;
 using IEmailService = CV_Filtation_System.Services.Services.IEmailService;
+using System.Net;
 namespace CV.Filtation.System.API
 {
     public class Program
@@ -20,12 +21,6 @@ namespace CV.Filtation.System.API
         {
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
-            //builder.Services.AddDbContext<AppDbContext>(options =>
-            //    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection2"))
-            //    .EnableSensitiveDataLogging()
-            //    .LogTo(Console.WriteLine, LogLevel.Information)
-            //    );
-            //builder.Services.AddLogging();
 
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddScoped<IJobPostingService, JobPostingService>();
@@ -34,6 +29,7 @@ namespace CV.Filtation.System.API
             //Add Email Congig
             var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
             builder.Services.AddSingleton(emailConfig);
+
             builder.Services.AddScoped<IEmailService, EmailService>();
 
             //Add config for Required Email
@@ -117,8 +113,7 @@ namespace CV.Filtation.System.API
             // Add Authentication and Authorization middleware
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseAuthorization();
-            app.UseAuthorization();
+
 
             app.MapControllers();
             app.MapControllerRoute(
