@@ -10,6 +10,7 @@ namespace CV_Filtation_System.Services.Models
     {
         public string Status { get; set; }
         public string Message { get; set; }
+        public object Errors { get; set; }
         public string Token { get; set; } // Add this property
         public DateTime? Expiration { get; set; } // Add this property
     }
