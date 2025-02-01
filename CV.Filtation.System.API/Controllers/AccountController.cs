@@ -71,9 +71,9 @@ namespace CV.Filtation.System.API.Controllers
                 City = model.City,
                 Email = model.Email,
                 PhoneNumber = model.Phone,
-                EmailConfirmed = true,
+                EmailConfirmed = false,
                 UserName = model.Email,
-                TwoFactorEnabled = true
+                TwoFactorEnabled = false
             };
 
             // Attempt to Create User
