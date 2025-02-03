@@ -261,7 +261,9 @@ namespace CV.Filtation.System.API.Controllers
                     new Response { Status = "Error", Message = "Invalid or expired token." });
             }
 
-            return Ok(new Response { Status = "Success", Message = "Email verified successfully." });
+            //return Ok(new Response { Status = "Success", Message = "Email verified successfully." });
+            return Content("<h1>Email verified successfully.</h1>","text/html");
+
         }
 
 
