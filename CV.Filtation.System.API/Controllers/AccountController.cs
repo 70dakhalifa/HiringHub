@@ -39,7 +39,7 @@ namespace CV.Filtation.System.API.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<ActionResult<UserDTO>> Register(RegisterUserDTO model, string role)
+        public async Task<ActionResult<UserDTO>> Register(RegisterUserDTO model)
         {
             // Check if user already exists
             var userExist = await _userManager.FindByEmailAsync(model.Email);
@@ -56,11 +56,11 @@ namespace CV.Filtation.System.API.Controllers
             }
 
             // Ensure the role exists
-            if (!await _roleManager.RoleExistsAsync(role))
-            {
-                return StatusCode(StatusCodes.Status400BadRequest,
-                        new Response { Status = "Error", Message = "This Role Does Not Exist." });
-            }
+            //if (!await _roleManager.RoleExistsAsync(role))
+            //{
+            //    return StatusCode(StatusCodes.Status400BadRequest,
+            //            new Response { Status = "Error", Message = "This Role Does Not Exist." });
+            //}
 
             // Create User Object
             var user = new User
@@ -87,7 +87,7 @@ namespace CV.Filtation.System.API.Controllers
             }
 
             // Assign Role to User
-            var roleResult = await _userManager.AddToRoleAsync(user, role);
+            var roleResult = await _userManager.AddToRoleAsync(user, "User");
             if (!roleResult.Succeeded)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
@@ -262,7 +262,7 @@ namespace CV.Filtation.System.API.Controllers
             }
 
             //return Ok(new Response { Status = "Success", Message = "Email verified successfully." });
-            return Content("<h1>Email verified successfully.</h1>","text/html");
+            return Content("<h1>Email Verification Successful</h1><p>Your email has been verified successfully. You can now login to your account.</p>", "text/html");
 
         }
 

@@ -44,18 +44,14 @@ namespace CV.Filtation.System.API.Controllers
 
                 if (result != null)
                 {
-                    var token = GenerateToken(company);
-
-                    var returnedCompany = new CompanyDTO
-                    {
-                        Email = company.Email,
-                        Token = token
-                    };
+                    int id = result.CompanyId;
+                    string Email = company.Email;
 
                     return Ok(new
                     {
                         Message = "Company registered successfully",
-                        Company = returnedCompany
+                        Id = id,
+                        Email = Email
                     });
                 }
             }
