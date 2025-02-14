@@ -7,6 +7,6 @@
         public string? EmploymentType { get; set; }
         public string? SalaryRange { get; set; }
         public string? Description { get; set; }
-        public List<int> CompanyIds { get; set; }
+        public int CompanyId { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace CV_Filtation_System.Core.Entities
 
         public DbSet<Company> Companies { get; set; }
         public DbSet<JobPosting> JobPostings { get; set; }
-        public DbSet<CompanyJobPosting> CompanyJobPostings { get; set; }
+        //public DbSet<CompanyJobPosting> CompanyJobPostings { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<UserSkill> UserSkills { get; set; }
         public DbSet<UserCompany> UserCompanies { get; set; }
@@ -25,21 +25,26 @@ namespace CV_Filtation_System.Core.Entities
             modelBuilder.Entity<UserCompany>()
                 .HasKey(uc => new { uc.UserId, uc.CompanyId });
 
-            modelBuilder.Entity<CompanyJobPosting>()
-                .HasKey(cj => new { cj.CompanyId, cj.JobPostingId });
+            //modelBuilder.Entity<CompanyJobPosting>()
+            //    .HasKey(cj => new { cj.CompanyId, cj.JobPostingId });
 
             modelBuilder.Entity<Company>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
+
+            modelBuilder.Entity<JobPosting>()
+                .HasOne(j => j.Company)
+                .WithMany(c => c.JobPostings)
+                .HasForeignKey(j => j.CompanyId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
         private static void SeedRoles(ModelBuilder builder)
         {
             builder.Entity<IdentityRole>().HasData
                 (
-                new IdentityRole() { Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "Admin" },
-                new IdentityRole() { Name = "User", ConcurrencyStamp = "2", NormalizedName = "User" },
+                 new IdentityRole() { Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "Admin" },
+                 new IdentityRole() { Name = "User", ConcurrencyStamp = "2", NormalizedName = "User" },
                  new IdentityRole() { Name = "HR", ConcurrencyStamp = "3", NormalizedName = "HR" }
-
                 );
         }
     }

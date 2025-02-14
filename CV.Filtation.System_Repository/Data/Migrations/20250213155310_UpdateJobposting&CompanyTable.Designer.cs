@@ -4,6 +4,7 @@ using CV_Filtation_System.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CV_Filtation_System.Repository.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250213155310_UpdateJobposting&CompanyTable")]
+    partial class UpdateJobpostingCompanyTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -260,21 +263,21 @@ namespace CV_Filtation_System.Repository.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "12ed6997-4ac6-49ec-8cce-54f238bf4ee9",
+                            Id = "e0fa9907-51f6-4c08-b665-faf368643e66",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "2797a31b-6d72-4270-9e0f-02a29ea32c7a",
+                            Id = "2599ea19-771a-40d3-8a17-e45267130191",
                             ConcurrencyStamp = "2",
                             Name = "User",
                             NormalizedName = "User"
                         },
                         new
                         {
-                            Id = "2c181961-6090-496f-9c61-ec12d9abdd05",
+                            Id = "0425f0c5-e9f7-4dd8-ba39-ad39f00d52b7",
                             ConcurrencyStamp = "3",
                             Name = "HR",
                             NormalizedName = "HR"

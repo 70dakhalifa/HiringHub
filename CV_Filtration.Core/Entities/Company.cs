@@ -17,8 +17,8 @@ namespace CV_Filtation_System.Core.Entities
         public string Email { get; set; } = string.Empty;
         public string ?Password { get; set; }
 
-        // Navigation property for the related job postings
-        public List<CompanyJobPosting> CompanyJobPostings { get; set; } = new List<CompanyJobPosting>();
+        // One-to-Many: A company has many job postings
+        public List<JobPosting> JobPostings { get; set; } = new List<JobPosting>();
     }
 
 }

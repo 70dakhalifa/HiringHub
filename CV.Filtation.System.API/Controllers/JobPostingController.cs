@@ -22,7 +22,7 @@ namespace CV.Filtation.System.API.Controllers
 
         // POST api/jobpostings
         [HttpPost]
-        public async Task<IActionResult> CreateJobPosting([FromBody] CreateJobPostingDto dto)
+        public async Task<IActionResult> CreateJobPosting([FromBody] DTO.CreateJobPostingDto dto)
         {
             if (dto == null)
             {
@@ -36,7 +36,8 @@ namespace CV.Filtation.System.API.Controllers
                 Location = dto.Location,
                 EmploymentType = dto.EmploymentType,
                 SalaryRange = dto.SalaryRange,
-                Description = dto.Description
+                Description = dto.Description,
+                CompanyId = dto.CompanyId
             };
 
             // Add the job posting to the database
@@ -62,8 +63,7 @@ namespace CV.Filtation.System.API.Controllers
         public async Task<IActionResult> GetJobPostingById(int id)
         {
             var jobPosting = await _context.JobPostings
-                .Include(jp => jp.CompanyJobPostings)
-                .ThenInclude(cjp => cjp.Company)
+                .Include(jp => jp.Company) // Directly include the Company
                 .FirstOrDefaultAsync(jp => jp.JobPostingId == id);
 
             if (jobPosting == null)
@@ -143,10 +143,8 @@ namespace CV.Filtation.System.API.Controllers
         [HttpGet("company/{companyId}")]
         public async Task<IActionResult> GetJobPostingsByCompany(int companyId)
         {
-            var jobPostings = await _context.CompanyJobPostings
-                .Where(cjp => cjp.CompanyId == companyId)
-                .Include(cjp => cjp.JobPosting)
-                .Select(cjp => cjp.JobPosting)
+            var jobPostings = await _context.JobPostings
+                .Where(jp => jp.CompanyId == companyId) 
                 .ToListAsync();
 
             if (jobPostings == null || !jobPostings.Any())
@@ -156,5 +154,6 @@ namespace CV.Filtation.System.API.Controllers
 
             return Ok(jobPostings);
         }
+
     }
 }

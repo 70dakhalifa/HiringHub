@@ -19,33 +19,26 @@ namespace CV_Filtation_System.Services.Services
                 .Where(j => j.Title.ToLower() == title.ToLower()) // Case-insensitive comparison
                 .FirstOrDefaultAsync();
         }
-
         public async Task<JobPosting> CreateJobPostingWithCompaniesAsync(CreateJobPostingWithCompaniesDto dto)
         {
+            var company = await _context.Companies.FindAsync(dto.CompanyId);
+            if (company == null)
+            {
+                throw new Exception("Company not found");
+            }
+
             var jobPosting = new JobPosting
             {
                 Title = dto.Title,
                 Location = dto.Location,
                 EmploymentType = dto.EmploymentType,
                 SalaryRange = dto.SalaryRange,
-                Description = dto.Description
+                Description = dto.Description,
+                CompanyId = dto.CompanyId, // Set the foreign key
+                Company = company // Assign the navigation property
             };
 
             _context.JobPostings.Add(jobPosting);
-            await _context.SaveChangesAsync();
-
-            foreach (var companyId in dto.CompanyIds)
-            {
-                var companyJobPosting = new CompanyJobPosting
-                {
-                    JobPostingId = jobPosting.JobPostingId,
-                    CompanyId = companyId,
-                    JobPosting = jobPosting,
-                    Company = await _context.Companies.FindAsync(companyId)
-                };
-                _context.CompanyJobPostings.Add(companyJobPosting);
-            }
-
             await _context.SaveChangesAsync();
 
             return jobPosting;
