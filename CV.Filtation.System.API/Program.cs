@@ -54,6 +54,12 @@ namespace CV.Filtation.System.API
                 options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
             });
 
+            builder.Services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                );
+
+
             builder.Services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = true;

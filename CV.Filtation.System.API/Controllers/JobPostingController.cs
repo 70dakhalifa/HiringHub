@@ -66,7 +66,7 @@ namespace CV.Filtation.System.API.Controllers
                 .Include(jp => jp.Company) // Directly include the Company
                 .FirstOrDefaultAsync(jp => jp.JobPostingId == id);
 
-            if (jobPosting == null)
+            if (jobPosting == null) 
             {
                 return NotFound();
             }
@@ -81,14 +81,10 @@ namespace CV.Filtation.System.API.Controllers
             var jobPostingsQuery = _context.JobPostings.AsQueryable();
 
             if (!string.IsNullOrEmpty(title))
-            {
-                jobPostingsQuery = jobPostingsQuery.Where(jp => jp.Title.Contains(title));
-            }
+                jobPostingsQuery = jobPostingsQuery.Where(jp => jp.Title.ToLower().Contains(title.ToLower()));
 
             if (!string.IsNullOrEmpty(location))
-            {
-                jobPostingsQuery = jobPostingsQuery.Where(jp => jp.Location.Contains(location));
-            }
+                jobPostingsQuery = jobPostingsQuery.Where(jp => jp.Location.ToLower().Contains(location.ToLower()));
 
             var jobPostings = await jobPostingsQuery.ToListAsync();
 
