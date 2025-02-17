@@ -15,7 +15,8 @@ namespace CV_Filtation_System.Core.Entities
         public string? Website { get; set; }
         public string? Location { get; set; }
         public string Email { get; set; } = string.Empty;
-        public string ?Password { get; set; }
+        public string? Password { get; set; }
+        public string? ProfilePicture {  get; set; }
 
         // One-to-Many: A company has many job postings
         public List<JobPosting> JobPostings { get; set; } = new List<JobPosting>();

@@ -5,6 +5,7 @@ namespace CV_Filtation_System.Core.Entities
     {
         [required]
         public string FName { get; set; }
+        public string? ProfilePictureUrl { get; set; }
         public string LName { get; set; }
         public string Address { get; set; }
         public string City { get; set; }

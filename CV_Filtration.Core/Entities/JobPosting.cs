@@ -15,6 +15,7 @@ namespace CV_Filtation_System.Core.Entities
         public string? Description { get; set; }
         public string JopType { get; set; }
         public string WorkMode { get; set; }
+        public string JobImageUrl { get; set; }
         public int CompanyId { get; set; }
         public Company Company { get; set; } // Navigation property    
     }

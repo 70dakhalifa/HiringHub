@@ -13,6 +13,11 @@ namespace CV_Filtation_System.Repository
     {
         private readonly AppDbContext _context;
 
+        public async Task UpdateAsync(Company item)
+        {
+            _context.Companies.Update(item);
+            await _context.SaveChangesAsync();
+        }
         public CompanyRepository(AppDbContext context)
         {
             _context = context;
@@ -43,7 +48,6 @@ namespace CV_Filtation_System.Repository
             
             return re;
         }
-
 
     }
 

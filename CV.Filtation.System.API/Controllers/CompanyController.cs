@@ -79,6 +79,7 @@ namespace CV.Filtation.System.API.Controllers
             var returnedCompany = new CompanyDTO
             {
                 Email = company.Email,
+                Id = company.CompanyId,
                 Token = token
             };
 
@@ -88,7 +89,34 @@ namespace CV.Filtation.System.API.Controllers
                 Company = returnedCompany
             });
         }
+        [HttpPost("UploadProfilePicture")]
+        public async Task<IActionResult> UploadProfilePicture(string Email, IFormFile file)
+        {
+            var company = await _companyRepository.GetByEmailAsync(Email);
+            if (company == null)
+            {
+                return NotFound("Company not found");
+            }
 
+            string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Company_profile_pictures");
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+
+            // Save new profile picture
+            string fileName = $"{Email}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            string filePath = Path.Combine(uploadFolder, fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            company.ProfilePicture = fileName;
+            await _companyRepository.UpdateAsync(company);
+
+            return Ok(new { Message = "Profile picture uploaded successfully", FileName = fileName });
+        }
         private string GenerateToken(Company company)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

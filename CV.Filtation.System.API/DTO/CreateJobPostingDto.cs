@@ -8,6 +8,7 @@
         public string? Description { get; set; }
         public string JopType { get; set; }
         public string WorkMode { get; set; }
+        public IFormFile? JobImageUrl { get; set; } 
         public int CompanyId { get; set; }
 
     }

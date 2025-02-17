@@ -1,4 +1,5 @@
 ﻿using CV.Filtation.System.API.DTO;
+using CV.Filtation.System.API.Helpers;
 using CV_Filtation_System.Core.Entities;
 using CV_Filtation_System.Services.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -22,14 +23,20 @@ namespace CV.Filtation.System.API.Controllers
 
         // POST api/jobpostings
         [HttpPost]
-        public async Task<IActionResult> CreateJobPosting([FromBody] DTO.CreateJobPostingDto dto)
+        public async Task<IActionResult> CreateJobPosting([FromForm] DTO.CreateJobPostingDto dto)
         {
             if (dto == null)
             {
                 return BadRequest("Invalid data.");
             }
+            var companyExists = await _context.Companies
+            .AnyAsync(c => c.CompanyId == dto.CompanyId);
 
-            // Create the job posting
+            if (!companyExists)
+            {
+                return BadRequest($"Company with ID {dto.CompanyId} does not exist.");
+            }
+
             var jobPosting = new JobPosting
             {
                 Title = dto.Title,
@@ -41,21 +48,30 @@ namespace CV.Filtation.System.API.Controllers
                 WorkMode = dto.WorkMode
             };
 
-            // Add the job posting to the database
+            if (dto.JobImageUrl != null)
+            {
+                string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "job_images");
+
+                // Use the helper function
+                string fileName = await FileUploadHelper.SaveUploadedFileAsync(
+                    dto.JobImageUrl,
+                    uploadFolder
+                );
+
+                jobPosting.JobImageUrl = fileName;
+            }
+
             _context.JobPostings.Add(jobPosting);
 
             try
             {
-                // Save the job posting
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                // Handle any database errors
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
 
-            // Return the created job posting with a 201 Created status
             return CreatedAtAction(nameof(GetJobPostingById), new { id = jobPosting.JobPostingId }, jobPosting);
         }
 

@@ -159,6 +159,40 @@ namespace CV.Filtation.System.API.Controllers
                 Expiration = DateTime.UtcNow.AddHours(1)
             });
         }
+        [HttpPost("UploadProfilePicture")]
+        //[Authorize]
+        public async Task<IActionResult> UploadProfilePicture(IFormFile file,string Email)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest(new Response { Status = "Error", Message = "No file uploaded." });
+            }
+
+            var user = await _userManager.FindByEmailAsync(Email);
+            if (user == null)
+            {
+                return NotFound(new Response { Status = "Error", Message = "User not found." });
+            }
+
+            var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "profile_pictures");
+            if (!Directory.Exists(uploadsFolderPath))
+            {
+                Directory.CreateDirectory(uploadsFolderPath);
+            }
+
+            var fileName = $"{Email}_{Path.GetFileName(file.FileName)}";
+            var filePath = Path.Combine(uploadsFolderPath, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            user.ProfilePictureUrl = $"/profile_pictures/{fileName}";
+            await _userManager.UpdateAsync(user);
+
+            return Ok(new Response { Status = "Success", Message = "Profile picture uploaded successfully."});
+        }
 
         [HttpGet]
         //[Authorize]

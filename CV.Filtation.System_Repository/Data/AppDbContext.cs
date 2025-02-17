@@ -18,7 +18,6 @@ namespace CV_Filtation_System.Core.Entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            SeedRoles(modelBuilder);
             modelBuilder.Entity<UserSkill>()
                 .HasKey(us => new { us.UserId, us.SkillId });
 

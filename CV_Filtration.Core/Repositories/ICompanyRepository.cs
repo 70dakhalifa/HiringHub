@@ -10,5 +10,7 @@ namespace CV_Filtation_System.Core.Repositories
         Task<Company> GetByEmailAsync(string email);
         Task<Company> AddAsync(Company item);
         Task DeleteAsync(Company item);
+        Task UpdateAsync(Company item);
+
     }
 }
