@@ -38,14 +38,5 @@ namespace CV_Filtation_System.Core.Entities
                 .HasForeignKey(j => j.CompanyId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
-        private static void SeedRoles(ModelBuilder builder)
-        {
-            builder.Entity<IdentityRole>().HasData
-                (
-                 new IdentityRole() { Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "Admin" },
-                 new IdentityRole() { Name = "User", ConcurrencyStamp = "2", NormalizedName = "User" },
-                 new IdentityRole() { Name = "HR", ConcurrencyStamp = "3", NormalizedName = "HR" }
-                );
-        }
     }
 }
