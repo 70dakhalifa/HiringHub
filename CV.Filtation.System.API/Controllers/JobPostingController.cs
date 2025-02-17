@@ -34,10 +34,11 @@ namespace CV.Filtation.System.API.Controllers
             {
                 Title = dto.Title,
                 Location = dto.Location,
-                EmploymentType = dto.EmploymentType,
                 SalaryRange = dto.SalaryRange,
                 Description = dto.Description,
-                CompanyId = dto.CompanyId
+                CompanyId = dto.CompanyId,
+                JopType = dto.JopType,
+                WorkMode = dto.WorkMode
             };
 
             // Add the job posting to the database
@@ -109,9 +110,10 @@ namespace CV.Filtation.System.API.Controllers
             // Update job posting details
             jobPosting.Title = dto.Title ?? jobPosting.Title;
             jobPosting.Location = dto.Location ?? jobPosting.Location;
-            jobPosting.EmploymentType = dto.EmploymentType ?? jobPosting.EmploymentType;
             jobPosting.SalaryRange = dto.SalaryRange ?? jobPosting.SalaryRange;
             jobPosting.Description = dto.Description ?? jobPosting.Description;
+            jobPosting.WorkMode = dto.WorkMode ?? jobPosting.WorkMode;
+            jobPosting.JopType = dto.JopType ?? jobPosting.JopType;
 
             _context.JobPostings.Update(jobPosting);
             await _context.SaveChangesAsync();

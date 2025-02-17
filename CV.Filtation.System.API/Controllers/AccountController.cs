@@ -159,6 +159,30 @@ namespace CV.Filtation.System.API.Controllers
                 Expiration = DateTime.UtcNow.AddHours(1)
             });
         }
+
+        [HttpGet]
+        //[Authorize]
+        public async Task<IActionResult> GetUserData(string Email)
+        {
+
+            var user = await _userManager.FindByEmailAsync(Email);
+            if (user == null)
+            {
+                return NotFound(new Response { Status = "Error", Message = "User does not exist." });
+            }
+
+            var userData = new UserProfileDTO
+            {
+                FName = user.FName,
+                LName = user.LName,
+                Email = user.Email,
+                Address = user.Address,
+                City = user.City,
+                Phone = user.PhoneNumber
+            };
+
+            return Ok(userData);
+        }
         #region TwoFactorLoginDTO
         //[HttpPost("login-2FA")]
         //public async Task<IActionResult> LoginWithOTP([FromBody] TwoFactorLoginDTO model)

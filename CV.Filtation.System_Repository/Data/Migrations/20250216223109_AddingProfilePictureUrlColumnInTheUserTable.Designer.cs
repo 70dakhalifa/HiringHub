@@ -4,6 +4,7 @@ using CV_Filtation_System.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CV_Filtation_System.Repository.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250216223109_AddingProfilePictureUrlColumnInTheUserTable")]
+    partial class AddingProfilePictureUrlColumnInTheUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,8 +75,7 @@ namespace CV_Filtation_System.Repository.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("JopType")
-                        .IsRequired()
+                    b.Property<string>("EmploymentType")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Location")
@@ -83,10 +85,6 @@ namespace CV_Filtation_System.Repository.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WorkMode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("JobPostingId");
@@ -177,6 +175,9 @@ namespace CV_Filtation_System.Repository.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ProfilePictureUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("ResetCodeExpiration")
                         .HasColumnType("datetime2");
 
@@ -265,21 +266,21 @@ namespace CV_Filtation_System.Repository.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6809e408-69a9-4cb8-8417-d2ccf741d2b3",
+                            Id = "ff9069d7-d738-4b36-9ecd-16778f931460",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "88a2334d-75da-432b-a181-29cea03ff960",
+                            Id = "20f75d2d-1a68-4799-9b2f-16f77f7f5acf",
                             ConcurrencyStamp = "2",
                             Name = "User",
                             NormalizedName = "User"
                         },
                         new
                         {
-                            Id = "70e8c18d-bedf-4d83-ba20-2766cd0a4cdc",
+                            Id = "09ec50ab-cb2d-4608-8b25-feabae668f8d",
                             ConcurrencyStamp = "3",
                             Name = "HR",
                             NormalizedName = "HR"

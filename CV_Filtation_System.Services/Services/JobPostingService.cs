@@ -31,11 +31,12 @@ namespace CV_Filtation_System.Services.Services
             {
                 Title = dto.Title,
                 Location = dto.Location,
-                EmploymentType = dto.EmploymentType,
                 SalaryRange = dto.SalaryRange,
                 Description = dto.Description,
                 CompanyId = dto.CompanyId, // Set the foreign key
-                Company = company // Assign the navigation property
+                JopType = dto.JopType,
+                WorkMode = dto.WorkMode,
+                Company = company, // Assign the navigation property
             };
 
             _context.JobPostings.Add(jobPosting);
