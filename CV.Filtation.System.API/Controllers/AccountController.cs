@@ -191,7 +191,7 @@ namespace CV.Filtation.System.API.Controllers
             user.ProfilePictureUrl = $"/profile_pictures/{fileName}";
             await _userManager.UpdateAsync(user);
 
-            return Ok(new Response { Status = "Success", Message = "Profile picture uploaded successfully."});
+            return Ok(new Response { Status = "Success", Message = "Profile picture uploaded successfully.",});
         }
 
         [HttpGet]

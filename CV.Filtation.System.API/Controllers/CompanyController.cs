@@ -112,10 +112,10 @@ namespace CV.Filtation.System.API.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            company.ProfilePicture = fileName;
+            company.ProfilePicture = "/Company_profile_pictures/" + fileName;
             await _companyRepository.UpdateAsync(company);
 
-            return Ok(new { Message = "Profile picture uploaded successfully", FileName = fileName });
+            return Ok(new { Message = "Profile picture uploaded successfully", FileName = company.ProfilePicture });
         }
         private string GenerateToken(Company company)
         {

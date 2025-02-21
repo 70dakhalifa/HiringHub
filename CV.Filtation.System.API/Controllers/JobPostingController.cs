@@ -58,7 +58,7 @@ namespace CV.Filtation.System.API.Controllers
                     uploadFolder
                 );
 
-                jobPosting.JobImageUrl = fileName;
+                jobPosting.JobImageUrl = "/job_images/"+fileName;
             }
 
             _context.JobPostings.Add(jobPosting);
