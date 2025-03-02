@@ -410,6 +410,42 @@ namespace CV.Filtation.System.API.Controllers
             _logger.LogError("ResetPassword: Password reset failed for user {Email}", resetPasswordDto.Email);
             return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Password reset failed. Please try again." });
         }
+
+        [HttpPost("UploadCV")]
+        public async Task<IActionResult> UploadCV(IFormFile file, string email)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest(new Response { Status = "Error", Message = "No file uploaded." });
+            }
+
+            var allowedExtensions = new[] { ".pdf" };
+            var fileExtension = Path.GetExtension(file.FileName).ToLower();
+            if (!allowedExtensions.Contains(fileExtension))
+            {
+                return BadRequest(new Response { Status = "Error", Message = "Invalid file type. Only PDF is allowed." });
+            }
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return NotFound(new Response { Status = "Error", Message = "User not found." });
+            }
+            var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "CVs");
+            if (!Directory.Exists(uploadsFolderPath))
+            {
+                Directory.CreateDirectory(uploadsFolderPath);
+            }
+            var fileName = $"{email}_{Guid.NewGuid()}{fileExtension}";
+            var filePath = Path.Combine(uploadsFolderPath, fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+            user.CV_FilePath = $"/CVs/{fileName}";
+            await _userManager.UpdateAsync(user);
+            return Ok(new Response { Status = "Success", Message = "CV uploaded successfully." });
+        }
     }
 }
 

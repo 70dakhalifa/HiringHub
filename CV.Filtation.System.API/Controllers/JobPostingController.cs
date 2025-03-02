@@ -93,6 +93,7 @@ namespace CV.Filtation.System.API.Controllers
 
         // GET api/jobpostings
         [HttpGet]
+        [HttpGet("GetAllJobPostings")]
         public async Task<IActionResult> GetAllJobPostings([FromQuery] string? title, [FromQuery] string? location)
         {
             var jobPostingsQuery = _context.JobPostings.AsQueryable();
@@ -103,7 +104,19 @@ namespace CV.Filtation.System.API.Controllers
             if (!string.IsNullOrEmpty(location))
                 jobPostingsQuery = jobPostingsQuery.Where(jp => jp.Location.ToLower().Contains(location.ToLower()));
 
-            var jobPostings = await jobPostingsQuery.ToListAsync();
+            var jobPostings = await jobPostingsQuery
+                .Select(jp => new
+                {
+                    title = jp.Title,
+                    location = jp.Location,
+                    salaryRange = jp.SalaryRange,
+                    description = jp.Description,
+                    jopType = jp.JopType,
+                    workMode = jp.WorkMode,
+                    jobImageUrl = jp.JobImageUrl,
+                    companyName = jp.Company.Name 
+                })
+                .ToListAsync();
 
             return Ok(jobPostings);
         }
