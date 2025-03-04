@@ -1,57 +1,16 @@
-# Hiring Hub
-## Overview
-The **Hiring Hub** is designed to streamline and enhance the hiring process for companies and job seekers. By automating key recruitment tasks such as CV parsing, job matching, and application submission, the system addresses common challenges in recruitment, including overwhelming application volumes, skill mismatches, and inefficiencies in communication.
+# Hiring Hub  
 
----
+## Overview  
+**Hiring Hub** simplifies recruitment by automating CV parsing, job matching, and application submission. It tackles challenges like overwhelming applications, skill mismatches, and inefficient communication.  
 
-## Features
-### 1. **CV Parsing and Data Extraction**
-- Automatically extracts structured data from CVs, including:
-  - Personal details (name, contact info, etc.)
-  - Education (degrees, certifications)
-  - Work experience (roles, durations)
-  - Skills and proficiencies
-- Converts unstructured CVs into a standardized format for processing.
+## Features  
+- **CV Parsing**: Extracts structured data (personal details, education, experience, skills).  
+- **Job Data Collection**: Analyzes job postings for relevant details.  
+- **Skill Matching**: Scores candidates against job requirements and suggests best-fit roles.  
+- **Automated CV Submission**: Sends CVs to matching job listings.  
+- **Company Filters**: Employers can filter candidates by location, education, and experience.  
+- **Applicant Notifications**: Alerts candidates about matches, applications, and updates.  
 
-### 2. **Job Data Collection**
-- Aggregates and analyzes job postings to extract:
-  - Job titles
-  - Required skills
-  - Experience levels
-  - Location preferences
-
-### 3. **Skill Matching and Job Recommendations**
-- Uses a scoring mechanism to:
-  - Match candidates to jobs based on skills and experience.
-  - Recommend best-fit roles for applicants.
-- Provides ranked job suggestions to candidates.
-
-### 4. **Automated CV Submission**
-- Submits CVs to relevant companies upon finding matches.
-- Simplifies the application process for both employers and applicants.
-
-### 5. **Company Filtering Options**
-- Allows employers to filter applicants by:
-  - Location
-  - Education level
-  - Relevant experience
-  - Custom criteria
-
-### 6. **Applicant Notifications**
-- Sends notifications to candidates about:
-  - New job matches
-  - Application submissions
-  - Updates on application status
-
----
-
-## Benefits
-### For Companies:
-- Streamlined recruitment process.
-- Access to better-matched candidates.
-- Significant reduction in manual workload.
-
-### For Applicants:
-- Improved job discovery with tailored recommendations.
-- Simplified application process.
-- Real-time updates on application status.
+## Benefits  
+- **For Companies**: Faster hiring, better-matched candidates, reduced manual work.  
+- **For Applicants**: Smarter job discovery, easier applications, real-time updates.
