@@ -3,6 +3,6 @@
     public class CompanyPostsDto
     {
         public int CompanyId { get; set; }
-        public string? Name { get; set; }
+        public string Name { get; set; }
     }
 }

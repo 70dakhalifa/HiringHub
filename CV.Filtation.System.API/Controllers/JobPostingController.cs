@@ -4,6 +4,7 @@ using CV_Filtation_System.Core.Entities;
 using CV_Filtation_System.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace CV.Filtation.System.API.Controllers
 {
@@ -13,15 +14,15 @@ namespace CV.Filtation.System.API.Controllers
     {
         private readonly IJobPostingService _jobPostingService;
         private readonly AppDbContext _context;
+        private readonly ILogger<JobPostingsController> _logger;
 
-        public JobPostingsController(IJobPostingService jobPostingService, AppDbContext context)
+        public JobPostingsController(IJobPostingService jobPostingService, AppDbContext context, ILogger<JobPostingsController> logger)
         {
             _jobPostingService = jobPostingService;
             _context = context;
+            _logger = logger;
         }
 
-
-        // POST api/jobpostings
         [HttpPost]
         public async Task<IActionResult> CreateJobPosting([FromForm] DTO.CreateJobPostingDto dto)
         {
@@ -29,9 +30,8 @@ namespace CV.Filtation.System.API.Controllers
             {
                 return BadRequest("Invalid data.");
             }
-            var companyExists = await _context.Companies
-            .AnyAsync(c => c.CompanyId == dto.CompanyId);
 
+            var companyExists = await _context.Companies.AnyAsync(c => c.CompanyId == dto.CompanyId);
             if (!companyExists)
             {
                 return BadRequest($"Company with ID {dto.CompanyId} does not exist.");
@@ -44,21 +44,29 @@ namespace CV.Filtation.System.API.Controllers
                 SalaryRange = dto.SalaryRange,
                 Description = dto.Description,
                 CompanyId = dto.CompanyId,
-                JopType = dto.JopType,
-                WorkMode = dto.WorkMode
+                JobType = dto.JobType,
+                WorkMode = dto.WorkMode,
+                IsFeatured = dto.IsFeatured,
+                IsRecommended = dto.IsRecommended
             };
 
             if (dto.JobImageUrl != null)
             {
+                if (dto.JobImageUrl.Length > 5 * 1024 * 1024) // 5MB limit
+                {
+                    return BadRequest("The image file is too large.");
+                }
+
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                var fileExtension = Path.GetExtension(dto.JobImageUrl.FileName).ToLower();
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    return BadRequest("Invalid file type. Only image files are allowed.");
+                }
+
                 string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "job_images");
-
-                // Use the helper function
-                string fileName = await FileUploadHelper.SaveUploadedFileAsync(
-                    dto.JobImageUrl,
-                    uploadFolder
-                );
-
-                jobPosting.JobImageUrl = "/job_images/"+fileName;
+                string fileName = await FileUploadHelper.SaveUploadedFileAsync(dto.JobImageUrl, uploadFolder);
+                jobPosting.JobImageUrl = "/job_images/" + fileName;
             }
 
             _context.JobPostings.Add(jobPosting);
@@ -69,21 +77,21 @@ namespace CV.Filtation.System.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex, "An error occurred while creating the job posting.");
+                return StatusCode(500, "An unexpected error occurred. Please try again later.");
             }
 
             return CreatedAtAction(nameof(GetJobPostingById), new { id = jobPosting.JobPostingId }, jobPosting);
         }
 
-        // GET api/jobpostings/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetJobPostingById(int id)
         {
             var jobPosting = await _context.JobPostings
-                .Include(jp => jp.Company) // Directly include the Company
+                .Include(jp => jp.Company)
                 .FirstOrDefaultAsync(jp => jp.JobPostingId == id);
 
-            if (jobPosting == null) 
+            if (jobPosting == null)
             {
                 return NotFound();
             }
@@ -91,10 +99,12 @@ namespace CV.Filtation.System.API.Controllers
             return Ok(jobPosting);
         }
 
-        // GET api/jobpostings
-        [HttpGet]
         [HttpGet("GetAllJobPostings")]
-        public async Task<IActionResult> GetAllJobPostings([FromQuery] string? title, [FromQuery] string? location)
+        public async Task<IActionResult> GetAllJobPostings(
+            [FromQuery] string title,
+            [FromQuery] string location,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
             var jobPostingsQuery = _context.JobPostings.AsQueryable();
 
@@ -104,24 +114,26 @@ namespace CV.Filtation.System.API.Controllers
             if (!string.IsNullOrEmpty(location))
                 jobPostingsQuery = jobPostingsQuery.Where(jp => jp.Location.ToLower().Contains(location.ToLower()));
 
+            var totalCount = await jobPostingsQuery.CountAsync();
             var jobPostings = await jobPostingsQuery
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(jp => new
                 {
                     title = jp.Title,
                     location = jp.Location,
                     salaryRange = jp.SalaryRange,
                     description = jp.Description,
-                    jopType = jp.JopType,
+                    jobType = jp.JobType,
                     workMode = jp.WorkMode,
                     jobImageUrl = jp.JobImageUrl,
-                    companyName = jp.Company.Name 
+                    companyName = jp.Company != null ? jp.Company.Name : null
                 })
                 .ToListAsync();
 
-            return Ok(jobPostings);
+            return Ok(new { TotalCount = totalCount, JobPostings = jobPostings });
         }
 
-        // PUT api/jobpostings/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateJobPosting(int id, [FromBody] UpdateJobPostingDto dto)
         {
@@ -136,13 +148,14 @@ namespace CV.Filtation.System.API.Controllers
                 return NotFound();
             }
 
-            // Update job posting details
             jobPosting.Title = dto.Title ?? jobPosting.Title;
             jobPosting.Location = dto.Location ?? jobPosting.Location;
             jobPosting.SalaryRange = dto.SalaryRange ?? jobPosting.SalaryRange;
             jobPosting.Description = dto.Description ?? jobPosting.Description;
             jobPosting.WorkMode = dto.WorkMode ?? jobPosting.WorkMode;
-            jobPosting.JopType = dto.JopType ?? jobPosting.JopType;
+            jobPosting.JobType = dto.JobType ?? jobPosting.JobType;
+            jobPosting.IsFeatured = dto.IsFeatured ?? jobPosting.IsFeatured;
+            jobPosting.IsRecommended = dto.IsRecommended ?? jobPosting.IsRecommended;
 
             _context.JobPostings.Update(jobPosting);
             await _context.SaveChangesAsync();
@@ -150,7 +163,6 @@ namespace CV.Filtation.System.API.Controllers
             return Ok(jobPosting);
         }
 
-        // DELETE api/jobpostings/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteJobPosting(int id)
         {
@@ -163,15 +175,14 @@ namespace CV.Filtation.System.API.Controllers
             _context.JobPostings.Remove(jobPosting);
             await _context.SaveChangesAsync();
 
-            return NoContent(); // 204 No Content
+            return NoContent();
         }
 
-        // GET api/jobpostings/company/{companyId}
         [HttpGet("company/{companyId}")]
         public async Task<IActionResult> GetJobPostingsByCompany(int companyId)
         {
             var jobPostings = await _context.JobPostings
-                .Where(jp => jp.CompanyId == companyId) 
+                .Where(jp => jp.CompanyId == companyId)
                 .ToListAsync();
 
             if (jobPostings == null || !jobPostings.Any())
@@ -182,5 +193,46 @@ namespace CV.Filtation.System.API.Controllers
             return Ok(jobPostings);
         }
 
+        [HttpGet("featured")]
+        public async Task<IActionResult> GetFeaturedJobPostings()
+        {
+            var featuredJobPostings = await _context.JobPostings
+                .Where(jp => jp.IsFeatured)
+                .Select(jp => new
+                {
+                    title = jp.Title,
+                    location = jp.Location,
+                    salaryRange = jp.SalaryRange,
+                    description = jp.Description,
+                    jobType = jp.JobType,
+                    workMode = jp.WorkMode,
+                    jobImageUrl = jp.JobImageUrl,
+                    companyName = jp.Company != null ? jp.Company.Name : null
+                })
+                .ToListAsync();
+
+            return Ok(featuredJobPostings);
+        }
+
+        [HttpGet("recommended")]
+        public async Task<IActionResult> GetRecommendedJobPostings()
+        {
+            var recommendedJobPostings = await _context.JobPostings
+                .Where(jp => jp.IsRecommended)
+                .Select(jp => new
+                {
+                    title = jp.Title,
+                    location = jp.Location,
+                    salaryRange = jp.SalaryRange,
+                    description = jp.Description,
+                    jobType = jp.JobType,
+                    workMode = jp.WorkMode,
+                    jobImageUrl = jp.JobImageUrl,
+                    companyName = jp.Company != null ? jp.Company.Name : null
+                })
+                .ToListAsync();
+
+            return Ok(recommendedJobPostings);
+        }
     }
 }

@@ -11,12 +11,12 @@ namespace CV.Filtation.System.API.DTO
         [EmailAddress]
         [Required(ErrorMessage = "Email is required")]
         public string Email { get; set; }
-        public string? Address { get; set; }
+        public string Address { get; set; }
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
         public string Phone { get; set; }
-        public string? City { get; set; }
+        public string City { get; set; }
 
 
 

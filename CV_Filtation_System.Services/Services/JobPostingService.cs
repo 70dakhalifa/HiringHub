@@ -34,7 +34,7 @@ namespace CV_Filtation_System.Services.Services
                 SalaryRange = dto.SalaryRange,
                 Description = dto.Description,
                 CompanyId = dto.CompanyId, // Set the foreign key
-                JopType = dto.JopType,
+                JobType = dto.JobType,
                 WorkMode = dto.WorkMode,
                 Company = company, // Assign the navigation property
             };
