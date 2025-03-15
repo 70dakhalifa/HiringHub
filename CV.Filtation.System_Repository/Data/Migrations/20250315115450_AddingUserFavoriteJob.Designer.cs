@@ -4,6 +4,7 @@ using CV_Filtation_System.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CV_Filtation_System.Repository.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250315115450_AddingUserFavoriteJob")]
+    partial class AddingUserFavoriteJob
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,9 +238,6 @@ namespace CV_Filtation_System.Repository.Data.Migrations
 
                     b.Property<int>("JobPostingId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("FavoriteDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("UserId", "JobPostingId");
 

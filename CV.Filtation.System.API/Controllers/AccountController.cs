@@ -156,7 +156,8 @@ namespace CV.Filtation.System.API.Controllers
                 Status = "Success",
                 Message = "Login successful.",
                 Token = jwtToken,
-                Expiration = DateTime.UtcNow.AddHours(1)
+                Expiration = DateTime.UtcNow.AddHours(1),
+                UserId = user.Id
             });
         }
         [HttpPost("UploadProfilePicture")]
@@ -217,6 +218,7 @@ namespace CV.Filtation.System.API.Controllers
 
             return Ok(userData);
         }
+
         #region TwoFactorLoginDTO
         //[HttpPost("login-2FA")]
         //public async Task<IActionResult> LoginWithOTP([FromBody] TwoFactorLoginDTO model)
@@ -324,6 +326,18 @@ namespace CV.Filtation.System.API.Controllers
 
         }
 
+        [HttpGet("CheckUserConfirm")]
+        //[Authorize]
+        public async Task<IActionResult> CheckUserConfirmEmail(string Email)
+        {
+
+            var user = await _userManager.FindByEmailAsync(Email);
+            if (user == null)
+            {
+                return NotFound(new Response { Status = "Error", Message = "User does not exist." });
+            }
+            return Ok(user.EmailConfirmed);
+        }
 
         [HttpPost("ForgotPassword")]
         [AllowAnonymous]

@@ -14,6 +14,7 @@ namespace CV_Filtation_System.Core.Entities
         public DbSet<Skill> Skills { get; set; }
         public DbSet<UserSkill> UserSkills { get; set; }
         public DbSet<UserCompany> UserCompanies { get; set; }
+        public DbSet<UserFavoriteJob> UserFavoriteJobs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,6 +37,9 @@ namespace CV_Filtation_System.Core.Entities
                 .WithMany(c => c.JobPostings)
                 .HasForeignKey(j => j.CompanyId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserFavoriteJob>()
+                .HasKey(uf => new { uf.UserId, uf.JobPostingId });
         }
     }
 }
