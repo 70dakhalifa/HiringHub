@@ -127,7 +127,8 @@ namespace CV.Filtation.System.API.Controllers
                     jobType = jp.JobType,
                     workMode = jp.WorkMode,
                     jobImageUrl = jp.JobImageUrl,
-                    companyName = jp.Company != null ? jp.Company.Name : null
+                    companyName = jp.Company != null ? jp.Company.Name : null,
+                    jobId = jp.JobPostingId
                 })
                 .ToListAsync();
 
