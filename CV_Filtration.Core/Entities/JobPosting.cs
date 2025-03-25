@@ -20,6 +20,7 @@ namespace CV_Filtation_System.Core.Entities
         public bool IsFeatured { get; set; } 
         public bool IsRecommended { get; set; } 
         public Company Company { get; set; }
+        public ICollection<JobApplication> Applications { get; set; }
     }
 }
 

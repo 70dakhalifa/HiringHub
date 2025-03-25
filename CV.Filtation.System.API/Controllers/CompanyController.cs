@@ -1,4 +1,5 @@
 ﻿using CV.Filtation.System.API.DTO;
+using CV.Filtation.System.API.DTO.Company;
 using CV_Filtation_System.Core.Entities;
 using CV_Filtation_System.Core.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -88,6 +89,45 @@ namespace CV.Filtation.System.API.Controllers
                 Message = "Login successful",
                 Company = returnedCompany
             });
+        }
+        [HttpGet("GetAll")]
+        public async Task<ActionResult<IEnumerable<CompanyDTO>>> GetAllCompanies()
+        {
+            var companies = await _companyRepository.GetAllAsync();
+            var companyDTOs = companies.Select(c => new Company
+            {
+                CompanyId = c.CompanyId,
+                Name = c.Name,
+                Email = c.Email,
+                Description = c.Description,
+                Location = c.Location,
+                Website = c.Website,
+                ProfilePicture = c.ProfilePicture
+            }).ToList();
+
+            return Ok(companyDTOs);
+        }
+        [HttpGet]
+        public async Task<ActionResult<CompanyDTO>> GetCompanyByEmail(string email)
+        {
+            var company = await _companyRepository.GetByEmailAsync(email);
+            if (company == null)
+            {
+                return NotFound("Company not found.");
+            }
+
+            var companyDTO = new Company
+            {
+                CompanyId = company.CompanyId,
+                Name = company.Name,
+                Email = company.Email,
+                Description = company.Description,
+                Location = company.Location,
+                Website = company.Website,
+                ProfilePicture = company.ProfilePicture
+            };
+
+            return Ok(companyDTO);
         }
         [HttpPost("UploadProfilePicture")]
         public async Task<IActionResult> UploadProfilePicture(string Email, IFormFile file)

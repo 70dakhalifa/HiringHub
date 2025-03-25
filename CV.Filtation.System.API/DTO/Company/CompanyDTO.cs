@@ -1,4 +1,4 @@
-﻿namespace CV.Filtation.System.API.DTO
+﻿namespace CV.Filtation.System.API.DTO.Company
 {
     public class CompanyDTO
     {

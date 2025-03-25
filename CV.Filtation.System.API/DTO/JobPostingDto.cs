@@ -1,4 +1,5 @@
-﻿using CV_Filtation_System.Services;
+﻿using CV.Filtation.System.API.DTO.Company;
+using CV_Filtation_System.Services;
 
 namespace CV.Filtation.System.API.DTO
 {
@@ -11,5 +12,6 @@ namespace CV.Filtation.System.API.DTO
         public string SalaryRange { get; set; }
         public string Description { get; set; }
         public List<CompanyPostsDto> Companies { get; set; } = new();
+
     }
 }

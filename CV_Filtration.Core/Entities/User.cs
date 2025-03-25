@@ -14,6 +14,8 @@ namespace CV_Filtation_System.Core.Entities
         public string? CV_FilePath { get; set; }
         public ICollection<UserSkill> UserSkills { get; set; } = new List<UserSkill>();
         public ICollection<UserCompany> UserCompanies { get; set; } = new List<UserCompany>();
+        public ICollection<UserFavoriteJob> FavoriteJobs { get; set; }
+        public ICollection<JobApplication> Applications { get; set; }
 
 
     }

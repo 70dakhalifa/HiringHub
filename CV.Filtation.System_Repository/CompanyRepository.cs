@@ -34,9 +34,10 @@ namespace CV_Filtation_System.Repository
         {
             throw new NotImplementedException();
         }
-        public Task<IReadOnlyList<Company>> GetAllAsync()
+        public async Task<IReadOnlyList<Company>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var company = await _context.Companies.ToListAsync();
+            return company;
         }
 
         public async Task<Company> GetByEmailAsync(string email)

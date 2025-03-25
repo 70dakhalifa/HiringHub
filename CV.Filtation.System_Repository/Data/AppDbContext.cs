@@ -12,6 +12,7 @@ namespace CV_Filtation_System.Core.Entities
         public DbSet<JobPosting> JobPostings { get; set; }
         //public DbSet<CompanyJobPosting> CompanyJobPostings { get; set; }
         public DbSet<Skill> Skills { get; set; }
+        public DbSet<JobApplication> JobApplication { get; set; }
         public DbSet<UserSkill> UserSkills { get; set; }
         public DbSet<UserCompany> UserCompanies { get; set; }
         public DbSet<UserFavoriteJob> UserFavoriteJobs { get; set; }
@@ -40,6 +41,16 @@ namespace CV_Filtation_System.Core.Entities
 
             modelBuilder.Entity<UserFavoriteJob>()
                 .HasKey(uf => new { uf.UserId, uf.JobPostingId });
+
+            modelBuilder.Entity<JobApplication>()
+                .HasOne(ja => ja.User)
+                .WithMany(u => u.Applications)
+                .HasForeignKey(ja => ja.UserId);
+
+            modelBuilder.Entity<JobApplication>()
+                .HasOne(ja => ja.JobPosting)
+                .WithMany(jp => jp.Applications)
+                .HasForeignKey(ja => ja.JobPostingId);
         }
     }
 }
