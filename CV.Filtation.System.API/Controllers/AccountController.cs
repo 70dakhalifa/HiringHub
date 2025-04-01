@@ -41,7 +41,6 @@ namespace CV.Filtation.System.API.Controllers
         [HttpPost("Register")]
         public async Task<ActionResult<UserDTO>> Register(RegisterUserDTO model)
         {
-            // Check if user already exists
             var userExist = await _userManager.FindByEmailAsync(model.Email);
             if (userExist != null)
             {
@@ -49,20 +48,11 @@ namespace CV.Filtation.System.API.Controllers
                     new Response { Status = "Error", Message = "User already exists!" });
             }
 
-            // Validate Password
             if (model.Password != model.ConfirmPassword)
             {
                 return BadRequest(new { Message = "Password and Confirm Password do not match." });
             }
 
-            // Ensure the role exists
-            //if (!await _roleManager.RoleExistsAsync(role))
-            //{
-            //    return StatusCode(StatusCodes.Status400BadRequest,
-            //            new Response { Status = "Error", Message = "This Role Does Not Exist." });
-            //}
-
-            // Create User Object
             var user = new User
             {
                 FName = model.FName,
@@ -76,11 +66,9 @@ namespace CV.Filtation.System.API.Controllers
                 TwoFactorEnabled = false
             };
 
-            // Attempt to Create User
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
-                // Log Errors (Optional)
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new Response { Status = "Error", Message = $"User Failed to Create. Errors: {errors}" });
@@ -194,8 +182,7 @@ namespace CV.Filtation.System.API.Controllers
 
             return Ok(new Response { Status = "Success", Message = "Profile picture uploaded successfully.",});
         }
-
-        [HttpGet]
+        [HttpGet("JobSeekerProfile")]
         //[Authorize]
         public async Task<IActionResult> GetUserData(string Email)
         {
@@ -213,7 +200,9 @@ namespace CV.Filtation.System.API.Controllers
                 Email = user.Email,
                 Address = user.Address,
                 City = user.City,
-                Phone = user.PhoneNumber
+                Phone = user.PhoneNumber,
+                CV_Path = user.CV_FilePath,
+                Profile_Pic = user.ProfilePictureUrl
             };
 
             return Ok(userData);
@@ -462,5 +451,3 @@ namespace CV.Filtation.System.API.Controllers
         }
     }
 }
-
-    
