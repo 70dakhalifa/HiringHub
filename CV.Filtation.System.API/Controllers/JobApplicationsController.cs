@@ -167,7 +167,7 @@ namespace CV.Filtation.System.API.Controllers
             _context.JobApplication.Remove(application);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Content("Job Application has been deleted successfully");
         }
     }
 }

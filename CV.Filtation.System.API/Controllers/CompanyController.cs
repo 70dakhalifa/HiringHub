@@ -107,7 +107,7 @@ namespace CV.Filtation.System.API.Controllers
 
             return Ok(companyDTOs);
         }
-        [HttpGet]
+        [HttpGet("GetCompanyProfile")]
         public async Task<ActionResult<CompanyDTO>> GetCompanyByEmail(string email)
         {
             var company = await _companyRepository.GetByEmailAsync(email);
@@ -116,9 +116,8 @@ namespace CV.Filtation.System.API.Controllers
                 return NotFound("Company not found.");
             }
 
-            var companyDTO = new Company
+            var companyDTO = new CompanyProfileDTO
             {
-                CompanyId = company.CompanyId,
                 Name = company.Name,
                 Email = company.Email,
                 Description = company.Description,
