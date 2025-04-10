@@ -168,9 +168,14 @@ namespace CV.Filtation.System.API.Controllers
         public async Task<IActionResult> DeleteJobPosting(int id)
         {
             var jobPosting = await _context.JobPostings.FindAsync(id);
-            if (jobPosting == null)
+            if (jobPosting == null) return NotFound();
+
+            if (!string.IsNullOrEmpty(jobPosting.JobImageUrl))
             {
-                return NotFound();
+                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", jobPosting.JobImageUrl.TrimStart('/'));
+
+                if (global::System.IO.File.Exists(imagePath))
+                    global::System.IO.File.Delete(imagePath);
             }
 
             _context.JobPostings.Remove(jobPosting);
@@ -178,6 +183,7 @@ namespace CV.Filtation.System.API.Controllers
 
             return NoContent();
         }
+
 
         [HttpGet("company/{companyId}")]
         public async Task<IActionResult> GetJobPostingsByCompany(int companyId)

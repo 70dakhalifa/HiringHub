@@ -150,7 +150,7 @@ namespace CV.Filtation.System.API.Controllers
         }
         [HttpPost("UploadProfilePicture")]
         //[Authorize]
-        public async Task<IActionResult> UploadProfilePicture(IFormFile file,string Email)
+        public async Task<IActionResult> UploadProfilePicture(IFormFile file, string Email)
         {
             if (file == null || file.Length == 0)
             {
@@ -169,6 +169,15 @@ namespace CV.Filtation.System.API.Controllers
                 Directory.CreateDirectory(uploadsFolderPath);
             }
 
+            if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
+            {
+                var existingFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", user.ProfilePictureUrl.TrimStart('/'));
+                if (global::System.IO.File.Exists(existingFilePath))
+                {
+                    global::System.IO.File.Delete(existingFilePath);
+                }
+            }
+
             var fileName = $"{Email}_{Path.GetFileName(file.FileName)}";
             var filePath = Path.Combine(uploadsFolderPath, fileName);
 
@@ -180,8 +189,13 @@ namespace CV.Filtation.System.API.Controllers
             user.ProfilePictureUrl = $"/profile_pictures/{fileName}";
             await _userManager.UpdateAsync(user);
 
-            return Ok(new Response { Status = "Success", Message = "Profile picture uploaded successfully.",});
+            return Ok(new Response
+            {
+                Status = "Success",
+                Message = "Profile picture uploaded successfully."
+            });
         }
+
         [HttpGet("JobSeekerProfile")]
         //[Authorize]
         public async Task<IActionResult> GetUserData(string Email)
@@ -434,20 +448,34 @@ namespace CV.Filtation.System.API.Controllers
             {
                 return NotFound(new Response { Status = "Error", Message = "User not found." });
             }
+
             var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "CVs");
             if (!Directory.Exists(uploadsFolderPath))
             {
                 Directory.CreateDirectory(uploadsFolderPath);
             }
+            if (!string.IsNullOrEmpty(user.CV_FilePath))
+            {
+                var existingCVPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", user.CV_FilePath.TrimStart('/'));
+                if (global::System.IO.File.Exists(existingCVPath))
+                {
+                    global::System.IO.File.Delete(existingCVPath);
+                }
+            }
+
             var fileName = $"{email}_{Guid.NewGuid()}{fileExtension}";
             var filePath = Path.Combine(uploadsFolderPath, fileName);
+
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
+
             user.CV_FilePath = $"/CVs/{fileName}";
             await _userManager.UpdateAsync(user);
+
             return Ok(new Response { Status = "Success", Message = "CV uploaded successfully." });
         }
+
     }
 }

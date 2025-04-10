@@ -143,13 +143,19 @@ namespace CV.Filtation.System.API.Controllers
                 Directory.CreateDirectory(uploadFolder);
             }
 
-            // Save new profile picture
+            if (!string.IsNullOrEmpty(company.ProfilePicture))
+            {
+                var existingImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", company.ProfilePicture.TrimStart('/'));
+                if (global::System.IO.File.Exists(existingImagePath))
+                {
+                    global::System.IO.File.Delete(existingImagePath);
+                }
+            }
+
             string fileName = $"{Email}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
             string filePath = Path.Combine(uploadFolder, fileName);
             using (var stream = new FileStream(filePath, FileMode.Create))
-            {
                 await file.CopyToAsync(stream);
-            }
 
             company.ProfilePicture = "/Company_profile_pictures/" + fileName;
             await _companyRepository.UpdateAsync(company);
