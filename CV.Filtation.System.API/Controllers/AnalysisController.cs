@@ -154,13 +154,13 @@ public class AnalysisController : ControllerBase
             // 4. Call external analysis service
             var analysisResult = await _analysisService.GetPercentageAnalysis(cvBytes, fileName, job.Description);
 
-            if (analysisResult == null || string.IsNullOrWhiteSpace(analysisResult.Suggestions))
+            if (analysisResult == null || string.IsNullOrWhiteSpace(analysisResult.match_percentage))
                 return NotFound("Could not analyze resume");
 
             // 5. Return results
             return Ok(new AnalysisResultDto
             {
-                Suggestions = analysisResult.Suggestions,
+                Suggestions = analysisResult.match_percentage,
                 AnalysisDate = DateTime.UtcNow
             });
         }

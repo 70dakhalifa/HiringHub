@@ -32,7 +32,7 @@ namespace CV_Filtation_System.Services.Services
 
             return await response.Content.ReadFromJsonAsync<ExternalAnalysisResult>();
         }
-        public async Task<ExternalAnalysisResult> GetPercentageAnalysis(byte[] cvBytes, string fileName, string jobDescription)
+        public async Task<PercentageMatchResult> GetPercentageAnalysis(byte[] cvBytes, string fileName, string jobDescription)
         {
             using var httpClient = _httpClientFactory.CreateClient();
             using var content = new MultipartFormDataContent();
@@ -53,7 +53,7 @@ namespace CV_Filtation_System.Services.Services
                 return null;
             }
 
-            return await response.Content.ReadFromJsonAsync<ExternalAnalysisResult>();
+            return await response.Content.ReadFromJsonAsync<PercentageMatchResult>();
         }
         public async Task<ExternalAnalysisResult> GetResumeSkillImprove(byte[] cvBytes, string fileName, string jobDescription)
         {
