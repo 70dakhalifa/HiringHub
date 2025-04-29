@@ -106,12 +106,6 @@ namespace CV_Filtation_System.Repository.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsFeatured")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRecommended")
-                        .HasColumnType("bit");
-
                     b.Property<string>("JobImageUrl")
                         .HasColumnType("nvarchar(max)");
 

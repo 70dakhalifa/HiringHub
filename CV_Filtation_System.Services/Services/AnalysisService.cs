@@ -23,7 +23,7 @@ namespace CV_Filtation_System.Services.Services
             content.Add(new StringContent(jobDescription), "job_desc");
 
             // Call external API
-            var response = await httpClient.PostAsync("http://khalfofa.duckdns.org:5000/analyze", content);
+            var response = await httpClient.PostAsync("https://26e3-156-195-106-67.ngrok-free.app/analyze", content);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -46,7 +46,7 @@ namespace CV_Filtation_System.Services.Services
             content.Add(new StringContent(jobDescription), "job_desc");
 
             // Call external API
-            var response = await httpClient.PostAsync("http://khalfofa.duckdns.org:5000/percentage_match", content);
+            var response = await httpClient.PostAsync("https://26e3-156-195-106-67.ngrok-free.app/percentage_match", content);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -69,7 +69,7 @@ namespace CV_Filtation_System.Services.Services
             content.Add(new StringContent(jobDescription), "job_desc");
 
             // Call external API
-            var response = await httpClient.PostAsync("http://khalfofa.duckdns.org:5000/skill_improve", content);
+            var response = await httpClient.PostAsync("https://26e3-156-195-106-67.ngrok-free.app/skill_improve", content);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -77,6 +77,25 @@ namespace CV_Filtation_System.Services.Services
             }
 
             return await response.Content.ReadFromJsonAsync<ExternalAnalysisResult>();
+        }
+
+        public async Task<JobRecommandResult> GetExpectedPosition(byte[] cvBytes, string fileName)
+        {
+            using var httpClient = _httpClientFactory.CreateClient();
+            using var content = new MultipartFormDataContent();
+
+            var fileContent = new ByteArrayContent(cvBytes);
+            fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/pdf");
+            content.Add(fileContent, "file", fileName);
+
+            var response = await httpClient.PostAsync("https://24d1-156-195-106-67.ngrok-free.app/recommend_job", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            return await response.Content.ReadFromJsonAsync<JobRecommandResult>();
         }
     }
 }

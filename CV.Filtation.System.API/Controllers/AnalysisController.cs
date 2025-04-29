@@ -130,7 +130,6 @@ public class AnalysisController : ControllerBase
     {
         try
         {
-            // 1. Validate user and CV
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) return NotFound("User not found");
 
@@ -143,14 +142,12 @@ public class AnalysisController : ControllerBase
             if (!System.IO.File.Exists(cvPath))
                 return NotFound("CV file not found in storage");
 
-            // 2. Get job description from database
             var job = await _jobPostingService.GetJobPostingByIdAsync(jobId);
             if (job == null) return NotFound("Job not found");
 
             if (string.IsNullOrWhiteSpace(job.Description))
                 return BadRequest("Job has no description");
 
-            // 3. Prepare data for analysis
             var cvBytes = await System.IO.File.ReadAllBytesAsync(cvPath);
             var fileName = Path.GetFileName(user.CV_FilePath);
 

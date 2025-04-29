@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CV_Filtation_System.Repository.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250304130643_AddFeaturedAndRecommendedFlags")]
-    partial class AddFeaturedAndRecommendedFlags
+    [Migration("20250429141106_Removing Featured Recommanded")]
+    partial class RemovingFeaturedRecommanded
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,6 +63,38 @@ namespace CV_Filtation_System.Repository.Data.Migrations
                     b.ToTable("Companies");
                 });
 
+            modelBuilder.Entity("CV_Filtation_System.Core.Entities.JobApplication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ApplicationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CV_FilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("JobPostingId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobPostingId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("JobApplication");
+                });
+
             modelBuilder.Entity("CV_Filtation_System.Core.Entities.JobPosting", b =>
                 {
                     b.Property<int>("JobPostingId")
@@ -77,16 +109,10 @@ namespace CV_Filtation_System.Repository.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRecommended")
-                        .HasColumnType("bit");
-
                     b.Property<string>("JobImageUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("JopType")
+                    b.Property<string>("JobType")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Location")
@@ -229,6 +255,24 @@ namespace CV_Filtation_System.Repository.Data.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("UserCompanies");
+                });
+
+            modelBuilder.Entity("CV_Filtation_System.Core.Entities.UserFavoriteJob", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("JobPostingId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FavoriteDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId", "JobPostingId");
+
+                    b.HasIndex("JobPostingId");
+
+                    b.ToTable("UserFavoriteJobs");
                 });
 
             modelBuilder.Entity("CV_Filtation_System.Core.Entities.UserSkill", b =>
@@ -379,6 +423,23 @@ namespace CV_Filtation_System.Repository.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("CV_Filtation_System.Core.Entities.JobApplication", b =>
+                {
+                    b.HasOne("CV_Filtation_System.Core.Entities.JobPosting", "JobPosting")
+                        .WithMany("Applications")
+                        .HasForeignKey("JobPostingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CV_Filtation_System.Core.Entities.User", "User")
+                        .WithMany("Applications")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("JobPosting");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("CV_Filtation_System.Core.Entities.JobPosting", b =>
                 {
                     b.HasOne("CV_Filtation_System.Core.Entities.Company", "Company")
@@ -405,6 +466,25 @@ namespace CV_Filtation_System.Repository.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Company");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CV_Filtation_System.Core.Entities.UserFavoriteJob", b =>
+                {
+                    b.HasOne("CV_Filtation_System.Core.Entities.JobPosting", "JobPosting")
+                        .WithMany()
+                        .HasForeignKey("JobPostingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CV_Filtation_System.Core.Entities.User", "User")
+                        .WithMany("FavoriteJobs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("JobPosting");
 
                     b.Navigation("User");
                 });
@@ -484,6 +564,11 @@ namespace CV_Filtation_System.Repository.Data.Migrations
                     b.Navigation("JobPostings");
                 });
 
+            modelBuilder.Entity("CV_Filtation_System.Core.Entities.JobPosting", b =>
+                {
+                    b.Navigation("Applications");
+                });
+
             modelBuilder.Entity("CV_Filtation_System.Core.Entities.Skill", b =>
                 {
                     b.Navigation("UserSkills");
@@ -491,6 +576,10 @@ namespace CV_Filtation_System.Repository.Data.Migrations
 
             modelBuilder.Entity("CV_Filtation_System.Core.Entities.User", b =>
                 {
+                    b.Navigation("Applications");
+
+                    b.Navigation("FavoriteJobs");
+
                     b.Navigation("UserCompanies");
 
                     b.Navigation("UserSkills");

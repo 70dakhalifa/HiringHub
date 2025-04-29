@@ -1,6 +1,4 @@
-﻿using CV.Filtation.System.API.DTO;
-using CV_Filtation_System.Core.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using CV_Filtation_System.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,8 +33,6 @@ namespace CV.Filtation.System.API.Controllers
                     JobType = uf.JobPosting.JobType,
                     WorkMode = uf.JobPosting.WorkMode,
                     JobImageUrl = uf.JobPosting.JobImageUrl,
-                    IsFeatured = uf.JobPosting.IsFeatured,
-                    IsRecommended = uf.JobPosting.IsRecommended
                 })
                 .ToListAsync();
 

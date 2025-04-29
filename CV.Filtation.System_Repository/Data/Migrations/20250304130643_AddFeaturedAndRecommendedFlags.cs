@@ -47,7 +47,7 @@ namespace CV_Filtation_System.Repository.Data.Migrations
                 oldType: "nvarchar(max)");
 
             migrationBuilder.AddColumn<bool>(
-                name: "IsFeatured",
+                name: "",
                 table: "JobPostings",
                 type: "bit",
                 nullable: false,
@@ -124,7 +124,7 @@ namespace CV_Filtation_System.Repository.Data.Migrations
                 table: "Companies");
 
             migrationBuilder.DropColumn(
-                name: "IsFeatured",
+                name: "",
                 table: "JobPostings");
 
             migrationBuilder.DropColumn(

@@ -8,7 +8,5 @@
         public string Description { get; set; }
         public string WorkMode { get; set; }
         public string JobType { get; set; }
-        public bool? IsFeatured { get; set; } 
-        public bool? IsRecommended { get; set; } 
     }
 }

@@ -27,8 +27,5 @@ namespace CV.Filtation.System.API.DTO
 
         public IFormFile JobImageUrl { get; set; }
 
-        public bool IsFeatured { get; set; }
-
-        public bool IsRecommended { get; set; }
     }
 }

@@ -2,9 +2,9 @@
 using CV.Filtation.System.API.Helpers;
 using CV_Filtation_System.Core.Entities;
 using CV_Filtation_System.Services.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace CV.Filtation.System.API.Controllers
 {
@@ -13,14 +13,21 @@ namespace CV.Filtation.System.API.Controllers
     public class JobPostingsController : ControllerBase
     {
         private readonly IJobPostingService _jobPostingService;
-        private readonly AppDbContext _context;
+        private readonly IAnalysisService _analysisService;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly ILogger<JobPostingsController> _logger;
+        private readonly UserManager<User> _userManager;
+        private readonly AppDbContext _context;
 
-        public JobPostingsController(IJobPostingService jobPostingService, AppDbContext context, ILogger<JobPostingsController> logger)
+
+        public JobPostingsController(IJobPostingService jobPostingService, AppDbContext context, ILogger<JobPostingsController> logger, UserManager<User> userManager, IWebHostEnvironment hostingEnvironment, IAnalysisService analysisService)
         {
             _jobPostingService = jobPostingService;
             _context = context;
             _logger = logger;
+            _userManager = userManager;
+            _hostingEnvironment = hostingEnvironment;
+            _analysisService = analysisService;
         }
 
         [HttpPost]
@@ -46,8 +53,6 @@ namespace CV.Filtation.System.API.Controllers
                 CompanyId = dto.CompanyId,
                 JobType = dto.JobType,
                 WorkMode = dto.WorkMode,
-                IsFeatured = dto.IsFeatured,
-                IsRecommended = dto.IsRecommended
             };
 
             if (dto.JobImageUrl != null)
@@ -155,8 +160,6 @@ namespace CV.Filtation.System.API.Controllers
             jobPosting.Description = dto.Description ?? jobPosting.Description;
             jobPosting.WorkMode = dto.WorkMode ?? jobPosting.WorkMode;
             jobPosting.JobType = dto.JobType ?? jobPosting.JobType;
-            jobPosting.IsFeatured = dto.IsFeatured ?? jobPosting.IsFeatured;
-            jobPosting.IsRecommended = dto.IsRecommended ?? jobPosting.IsRecommended;
 
             _context.JobPostings.Update(jobPosting);
             await _context.SaveChangesAsync();
@@ -204,7 +207,6 @@ namespace CV.Filtation.System.API.Controllers
         public async Task<IActionResult> GetFeaturedJobPostings()
         {
             var featuredJobPostings = await _context.JobPostings
-                .Where(jp => jp.IsFeatured)
                 .Select(jp => new
                 {
                     title = jp.Title,
@@ -220,26 +222,39 @@ namespace CV.Filtation.System.API.Controllers
 
             return Ok(featuredJobPostings);
         }
-
         [HttpGet("recommended")]
-        public async Task<IActionResult> GetRecommendedJobPostings()
+        public async Task<IActionResult> GetRecommendedJobPostings(string userId)
         {
-            var recommendedJobPostings = await _context.JobPostings
-                .Where(jp => jp.IsRecommended)
-                .Select(jp => new
-                {
-                    title = jp.Title,
-                    location = jp.Location,
-                    salaryRange = jp.SalaryRange,
-                    description = jp.Description,
-                    jobType = jp.JobType,
-                    workMode = jp.WorkMode,
-                    jobImageUrl = jp.JobImageUrl,
-                    companyName = jp.Company != null ? jp.Company.Name : null
-                })
-                .ToListAsync();
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return NotFound("User not found");
 
-            return Ok(recommendedJobPostings);
+            if (string.IsNullOrEmpty(user.CV_FilePath))
+                return BadRequest("User has no CV uploaded");
+
+            var webRootPath = _hostingEnvironment.WebRootPath;
+            var cvPath = Path.Combine(webRootPath, "CVs", Path.GetFileName(user.CV_FilePath));
+
+            if (!global::System.IO.File.Exists(cvPath))
+                return NotFound("CV file not found in storage");
+
+            var cvBytes = await global::System.IO.File.ReadAllBytesAsync(cvPath);
+            var fileName = Path.GetFileName(user.CV_FilePath);
+
+            // Call updated service method
+            var recommendationResult = await _analysisService.GetExpectedPosition(cvBytes, fileName);
+
+            if (recommendationResult == null ||
+                !recommendationResult.RecommendedPositions.Any())
+            {
+                return NotFound("Could not generate job recommendations");
+            }
+
+            // Return proper DTO with recommendations
+            return Ok(
+            new
+            {
+                recommendationResult.RecommendedPositions,
+            });
         }
     }
 }
