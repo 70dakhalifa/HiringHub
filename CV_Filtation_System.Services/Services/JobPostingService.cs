@@ -44,5 +44,12 @@ namespace CV_Filtation_System.Services.Services
 
             return jobPosting;
         }
+
+        public Task<JobPosting> GetJobPostingByIdAsync(int id)
+        {
+            return _context.JobPostings
+                .Where(j => j.JobPostingId == id)
+                .FirstOrDefaultAsync();
+        }
     }
 }

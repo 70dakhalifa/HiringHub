@@ -1,30 +1,25 @@
 using CV_Filtation_System.Core.Entities;
 using CV_Filtation_System.Core.Repositories;
 using CV_Filtation_System.Repository;
+using CV_Filtation_System.Services.Models;
+using CV_Filtation_System.Services.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using CV_Filtation_System.Services.Services;
-using FluentAssertions.Common;
-using CV_Filtation_System.Services.Models;
-using NETCore.MailKit.Core;
 using EmailService = CV_Filtation_System.Services.Services.EmailService;
 using IEmailService = CV_Filtation_System.Services.Services.IEmailService;
-using System.Net;
 namespace CV.Filtation.System.API
 {
     public class Program
-
-
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
 
-            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AymanConnectionString")));
             builder.Services.AddScoped<IJobPostingService, JobPostingService>();
             builder.Services.AddControllers();
 
@@ -32,7 +27,9 @@ namespace CV.Filtation.System.API
             var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
             builder.Services.AddSingleton(emailConfig);
 
+            builder.Services.AddHttpClient();
             builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IAnalysisService, AnalysisService>();
 
             //Add config for Required Email
             builder.Services.Configure<IdentityOptions>(

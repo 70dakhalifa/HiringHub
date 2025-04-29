@@ -6,6 +6,7 @@ namespace CV_Filtation_System.Services.Services
     public interface IJobPostingService
     {
         Task<JobPosting> GetJobPostingByTitleAsync(string title);
+        Task<JobPosting> GetJobPostingByIdAsync(int id);
         Task<JobPosting> CreateJobPostingWithCompaniesAsync(CreateJobPostingWithCompaniesDto dto);
     }
 
