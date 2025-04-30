@@ -23,7 +23,7 @@ namespace CV_Filtation_System.Services.Services
             content.Add(new StringContent(jobDescription), "job_desc");
 
             // Call external API
-            var response = await httpClient.PostAsync("https://26e3-156-195-106-67.ngrok-free.app/analyze", content);
+            var response = await httpClient.PostAsync("https://6dd2-156-195-106-67.ngrok-free.app/analyze", content);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -46,7 +46,7 @@ namespace CV_Filtation_System.Services.Services
             content.Add(new StringContent(jobDescription), "job_desc");
 
             // Call external API
-            var response = await httpClient.PostAsync("https://26e3-156-195-106-67.ngrok-free.app/percentage_match", content);
+            var response = await httpClient.PostAsync("https://6dd2-156-195-106-67.ngrok-free.app/percentage_match", content);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -69,7 +69,7 @@ namespace CV_Filtation_System.Services.Services
             content.Add(new StringContent(jobDescription), "job_desc");
 
             // Call external API
-            var response = await httpClient.PostAsync("https://26e3-156-195-106-67.ngrok-free.app/skill_improve", content);
+            var response = await httpClient.PostAsync("https://6dd2-156-195-106-67.ngrok-free.app/skill_improve", content);
 
             if (!response.IsSuccessStatusCode)
             {
