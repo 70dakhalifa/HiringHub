@@ -19,7 +19,7 @@ namespace CV.Filtation.System.API
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
 
-            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AymanConnectionString")));
             builder.Services.AddScoped<IJobPostingService, JobPostingService>();
             builder.Services.AddControllers();
 

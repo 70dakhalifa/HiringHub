@@ -97,5 +97,47 @@ namespace CV_Filtation_System.Services.Services
 
             return await response.Content.ReadFromJsonAsync<JobRecommandResult>();
         }
+
+        public async Task<ExternalSimiratyScoreResult> GetSimilartyScoremprove(byte[] cvBytes, string fileName, string jobDescription)
+        {
+            using var httpClient = _httpClientFactory.CreateClient();
+            using var content = new MultipartFormDataContent();
+
+            // Convert byte[] to StreamContent for better file handling
+            var stream = new MemoryStream(cvBytes);
+            var fileContent = new StreamContent(stream);
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
+
+            // Add the resume file with the proper name
+            content.Add(fileContent, "file", fileName);
+
+            // Add job description
+            content.Add(new StringContent(jobDescription), "jd");
+
+            // Updated URL with trailing slash
+            var response = await httpClient.PostAsync("https://442d-156-195-177-8.ngrok-free.app/calculate_similarity/", content);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"API Response Status: {response.StatusCode}");
+            Console.WriteLine($"API Response Content: {responseContent}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"API Error: {response.StatusCode} - {responseContent}");
+                return null;
+            }
+
+            try
+            {
+                var result = await response.Content.ReadFromJsonAsync<ExternalSimiratyScoreResult>();
+                Console.WriteLine($"Parsed Result: {result?.similarity_score ?? "null"}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"JSON Parsing Error: {ex.Message}");
+                return null;
+            }
+        }
     }
 }
